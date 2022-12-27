@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%=title %></title>
+  </head>
+  <body>
+    <h1>
+      Hello
+      <p id="user_data">
+        <span id="name"></span>
+        <span id="email"></span>
+      </p>
+    </h1>
+    <a href="/logout">Logout</a>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js"
+      integrity="sha512-QTnb9BQkG4fBYIt9JGvYmxPpd6TBeKp6lsUrtiVQsrJ9sb33Bn9s0wMQO9qVBFbPX3xHRAsBHvXlcsrnJjExjg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      async function GetProfile() {
+        try {
+          const response = await axios.get("/auth/me", {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: localStorage.getItem("token"),
+            },
+          });
+          console.log(response.data);
+          const { email, name } = response.data.data;
+          document.getElementById("name").innerHTML = name;
+          document.getElementById("email").innerHTML = email;
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      function isAuthenticated() {
+        if (localStorage.getItem("token")) {
+          GetProfile();
+        } else {
+          window.location.href = "/";
+        }
+      }
+
+      window.onload = isAuthenticated();
+    </script>
+  </body>
+</html>
